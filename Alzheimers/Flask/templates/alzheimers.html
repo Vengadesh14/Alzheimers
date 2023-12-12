@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>COGNITIVE CARE</title>
+    <style>
+        body {
+            text-align: left;
+            background-image: url('ADD.jpg');
+            background-color: violet; /* Replace 'background.jpg' with the path to your background image */
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        #content {
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+            margin-top: 50px;
+            margin-left: 20px; /* Adjust the margin value as per your preference */
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <h1>COGNITIVE CARE</h1>
+        <form id="uploadForm" action="/predict" method="post" enctype="multipart/form-data">
+            <label for="imageUpload"><b>Upload your MRI scan here:<b></label>
+            <input type="file" id="imageUpload" name="image" accept="image/*">
+        </form>
+        <br>
+        <img id="uploadedImage" src="" width="300" style="display: none;">
+        <br>
+        <button id="predictButton" onclick="predict()">Predict</button>
+        <h3>Prediction:</h3>
+        <p id="predictionText"></p>
+    </div>
+
+    <script>
+        // Display uploaded image
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    document.getElementById('uploadedImage').src = e.target.result;
+                    document.getElementById('uploadedImage').style.display = 'block';
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Handle file upload
+        document.getElementById('imageUpload').addEventListener('change', function () {
+            readURL(this);
+        });
+
+        // Predict function
+        function predict() {
+            var form = document.getElementById('uploadForm');
+            var data = new FormData(form);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open(form.method, form.action, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var predictionText = document.getElementById('predictionText');
+                    predictionText.textContent = xhr.responseText;
+                }
+            };
+
+            xhr.send(data);
+        }
+    </script>
+</body>
+</html>
